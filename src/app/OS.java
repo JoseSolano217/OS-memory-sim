@@ -1,11 +1,9 @@
 package app;
 
 import app.data.MemoryBlock;
-import app.data.MemoryUnit;
 import app.data.Process;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public class OS {
@@ -21,7 +19,12 @@ public class OS {
     }
 
     public void run() {
-
+        for (Process process: processes) {
+            if (process.getProcessState() == Process.State.Running) {
+                // Fill with first hole method
+                //process.run();
+            }
+        }
     }
 
     public void assignOwnMemory() {
@@ -30,10 +33,6 @@ public class OS {
                 if (i <= size) pc.getAllMemory().getUnits().get(i).setInUse(true);
             }
         }
-    }
-
-    public MemoryBlock getBiggestHole() {
-
     }
 
     public void findHoles() {

@@ -4,22 +4,27 @@ import java.util.Random;
 
 public class Process {
 
+    private String name;
     private int size;
     private int duration;
-    private enum State {
+    public enum State {
         Waiting,
         Running,
         Dead
     }
     private State processState = State.Waiting;
 
-    public Process() {
+    public Process(String name) {
         this.size = new Random().nextInt(15) + 1;
         this.duration = new Random().nextInt(5);
+        this.name = name;
     }
 
     private void tick() {
-        if (processState == State.Waiting) duration--;
+        if (processState == State.Running) {
+            duration--;
+            System.out.println("Time left to finish process " + name + ": " + duration + "s");
+        }
         if (duration == 0) processState = State.Dead;
     }
 
@@ -43,7 +48,13 @@ public class Process {
         return processState;
     }
 
-    public void setProcessState(State processState) {
-        this.processState = processState;
+    public void kill() {
+        this.processState = State.Dead;
+        System.out.println("Killed process " + name);
+    }
+
+    public void run(MemoryBlock memoryBlock) {
+        this.processState = State.Running;
+        System.out.println("Running process " + name + " in block " + memoryBlock.getUnits().getFirst());
     }
 }

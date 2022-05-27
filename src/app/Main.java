@@ -6,11 +6,14 @@ public class Main {
         new Main();
     }
 
-    public Main() {
+    private PC pc;
+    private OS OS;
 
+    public Main() {
+        tick();
     }
 
     public void tick() {
-
+        pc.tick();
     }
 }
