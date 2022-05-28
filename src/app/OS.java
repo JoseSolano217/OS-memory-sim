@@ -19,11 +19,17 @@ public class OS {
     }
 
     public void run() {
-        for (Process process: processes) {
-            if (process.getProcessState() == Process.State.Running) {
-                // Fill with first hole method
-                //process.run();
+        if (!pc.isStartingUp()) {
+            findHoles();
+            for (Process process : processes) {
+                if (process.getProcessState() == Process.State.Running) {
+                    // Fill with first hole method
+                    //process.run();
+                }
             }
+            showHoles();
+        } else {
+            assignOwnMemory();
         }
     }
 
@@ -37,7 +43,7 @@ public class OS {
 
     public void findHoles() {
         List<MemoryBlock> blockList = new ArrayList<>();
-        int blockIndex = 0;
+        int blockIndex = -1;
         boolean isAHole = false;
         for (int i = 0; i < pc.getAvailableMemory().getTotalSize(); i++) {
             if (!pc.getAvailableMemory().getUnits().get(i).isInUse()) {
@@ -45,13 +51,39 @@ public class OS {
                     blockList.add(new MemoryBlock());
                     isAHole = true;
                     blockList.get(i).getUnits().add(pc.getAllMemory().getUnits().get(i));
+                    blockIndex++;
                 } else {
-                    blockList.get(i).getUnits().add(pc.getAllMemory().getUnits().get(i));
+                    blockList.get(blockIndex).getUnits().add(pc.getAllMemory().getUnits().get(i));
                 }
             } else {
                 isAHole = false;
             }
         }
+        this.holes = blockList;
+    }
+
+    public void showHoles() {
+        System.out.println("Holes found: " + holes.size());
+        for (int i = 0; i < holes.size(); i++) {
+            System.out.println("Status of hole " + (i+1) + ":");
+            holes.get(i).showStats();
+        }
+    }
+
+    public void showProcesses() {
+        List<Process> livingProcesses = getAliveProcesses();
+        System.out.println("Total processes: " + livingProcesses.size());
+        for (Process process: processes) {
+            process.showStats();
+        }
+    }
+
+    public List<Process> getAliveProcesses() {
+        List<Process> livingProcesses = new ArrayList<>();
+        for (Process process: processes) {
+            if (process.getProcessState() != Process.State.Dead) livingProcesses.add(process);
+        }
+        return livingProcesses;
     }
 
     public int getSize() {

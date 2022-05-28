@@ -7,6 +7,7 @@ import java.util.LinkedList;
 
 public class PC {
 
+    private boolean startup = true;
     private MemoryBlock allMemory;
     private OS pc89;
 
@@ -36,18 +37,28 @@ public class PC {
             while (delta >= 1) {
                 delta--;
                 tick();
+                startup = false;
             }
             if (System.currentTimeMillis() - timer > 1000) {
                 timer += 1000;
                 time++;
+                System.out.println(time + " seconds passed since simulation start");
             }
         }
     }
 
     public MemoryBlock getAvailableMemory() {
         LinkedList<MemoryUnit> memory = new LinkedList<>();
-        allMemory.getUnits().stream().forEach(memoryUnit -> {if (!memoryUnit.isInUse()) memory.add(memoryUnit);});
+        allMemory.getUnits().forEach(memoryUnit -> {if (!memoryUnit.isInUse()) memory.add(memoryUnit);});
         return new MemoryBlock(memory);
+    }
+
+    public boolean isStartingUp() {
+        return startup;
+    }
+
+    public void setStartup(boolean startup) {
+        this.startup = startup;
     }
 
     public MemoryBlock getAllMemory() {

@@ -12,6 +12,14 @@ public class MemoryBlock {
         this.processInUse = null;
     }
 
+    public MemoryBlock(int size) {
+        this.totalSize = new LinkedList<>();
+        this.processInUse = null;
+        for (int i = 0; i < size; i++) {
+            addUnit(new MemoryUnit());
+        }
+    }
+
     public MemoryBlock() {
         this.totalSize = new LinkedList<>();
         this.processInUse = null;
@@ -26,10 +34,19 @@ public class MemoryBlock {
     }
 
     public void addUnit(MemoryUnit unit) {
-        if (processInUse != null) {
+        if (processInUse == null) {
             totalSize.add(unit);
         } else {
             System.err.println("Block already in use");
+        }
+    }
+
+    public void showStats() {
+        System.out.println("Size of block: " + totalSize.size());
+        if (processInUse != null) {
+            System.out.println("Process using this block: " + processInUse.getName());
+        } else {
+            System.out.println("No process is using this block");
         }
     }
 

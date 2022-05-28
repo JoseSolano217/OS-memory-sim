@@ -23,9 +23,25 @@ public class Process {
     private void tick() {
         if (processState == State.Running) {
             duration--;
-            System.out.println("Time left to finish process " + name + ": " + duration + "s");
         }
         if (duration == 0) processState = State.Dead;
+    }
+
+    public void showStats() {
+        System.out.println("Process " + name + " is " + processState);
+        System.out.println("Time left to finish process " + name + ": " + duration + "s");
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setProcessState(State processState) {
+        this.processState = processState;
     }
 
     public int getSize() {
