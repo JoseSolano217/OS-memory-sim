@@ -42,6 +42,8 @@ public class PC {
             if (System.currentTimeMillis() - timer > 1000) {
                 timer += 1000;
                 time++;
+                pc89.processesString();
+                pc89.showHoles();
                 System.out.println(time + " seconds passed since simulation start");
             }
         }

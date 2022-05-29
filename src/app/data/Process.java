@@ -15,16 +15,16 @@ public class Process {
     private State processState = State.Waiting;
 
     public Process(String name) {
-        this.size = new Random().nextInt(15) + 1;
-        this.duration = new Random().nextInt(5);
+        this.size = new Random().nextInt(10) + 5;
+        this.duration = new Random().nextInt(10) + 5;
         this.name = name;
     }
 
-    private void tick() {
+    public void tick() {
         if (processState == State.Running) {
             duration--;
         }
-        if (duration == 0) processState = State.Dead;
+        if (duration == 0 && processState != State.Dead) kill();
     }
 
     public void showStats() {
@@ -70,7 +70,19 @@ public class Process {
     }
 
     public void run(MemoryBlock memoryBlock) {
-        this.processState = State.Running;
-        System.out.println("Running process " + name + " in block " + memoryBlock.getUnits().getFirst());
+        if (memoryBlock != null && processState == State.Waiting) {
+            this.processState = State.Running;
+            System.out.println("Running process " + name);
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Process{" +
+                "name='" + name + '\'' +
+                ", size=" + size +
+                ", duration=" + duration +
+                ", processState=" + processState +
+                '}';
     }
 }

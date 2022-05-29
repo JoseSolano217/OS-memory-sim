@@ -22,15 +22,23 @@ public class OS {
         if (!pc.isStartingUp()) {
             findHoles();
             for (Process process : processes) {
-                if (process.getProcessState() == Process.State.Running) {
-                    // Fill with first hole method
-                    //process.run();
+                if (process.getProcessState() == Process.State.Waiting) {
+                    process.run(firstFit(holes, process.getSize()));
                 }
+                process.tick();
             }
-            showHoles();
         } else {
             assignOwnMemory();
         }
+    }
+
+    public MemoryBlock firstFit(List<MemoryBlock> blocks, int processSize) {
+        for (MemoryBlock block:blocks) {
+            if (block.getTotalSize() >= processSize) {
+                return block;
+            }
+        }
+        return null;
     }
 
     public void assignOwnMemory() {
@@ -38,6 +46,9 @@ public class OS {
             for (int i = 0; i < pc.getAllMemory().getTotalSize(); i++) {
                 if (i <= size) pc.getAllMemory().getUnits().get(i).setInUse(true);
             }
+            System.out.println("Memory 0 to " + size + " assigned to OS");
+        } else {
+            System.err.println("Not enough memory to assign to OS");
         }
     }
 
@@ -48,10 +59,10 @@ public class OS {
         for (int i = 0; i < pc.getAvailableMemory().getTotalSize(); i++) {
             if (!pc.getAvailableMemory().getUnits().get(i).isInUse()) {
                 if (!isAHole) {
+                    blockIndex++;
                     blockList.add(new MemoryBlock());
                     isAHole = true;
-                    blockList.get(i).getUnits().add(pc.getAllMemory().getUnits().get(i));
-                    blockIndex++;
+                    blockList.get(blockIndex).getUnits().add(pc.getAllMemory().getUnits().get(i));
                 } else {
                     blockList.get(blockIndex).getUnits().add(pc.getAllMemory().getUnits().get(i));
                 }
@@ -84,6 +95,12 @@ public class OS {
             if (process.getProcessState() != Process.State.Dead) livingProcesses.add(process);
         }
         return livingProcesses;
+    }
+
+    public void processesString() {
+        for (Process process: processes) {
+            System.out.println(process.toString());
+        }
     }
 
     public int getSize() {
